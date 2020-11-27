@@ -18,6 +18,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import {getPatientsDetails} from '../Redux/PatientsRedux/actions'
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@material-ui/lab/Pagination';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -63,33 +64,49 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ResponsiveDrawer(props) {
+  let dynamicRouting = new URLSearchParams(useLocation().search)
   const { window } = props;
   const classes = useStyles();
-  const [sorted,setSort] = useState("")
-  const [filter,setFilter] = useState("")
+  const patientArray = useSelector(state => state.patientReducer.patientArray)
+  const [itemArray , setItemArray] = useState([])
+  const [sorted,setSort] = useState(dynamicRouting.get("sorted") || null)
+  const [filter,setFilter] = useState(dynamicRouting.get("filter") || null) 
   const theme = useTheme();
   const total = useSelector((state) => state.patientReducer.totalCount)
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [search,setSearch] = useState("")
   const dispatch = useDispatch()
+
+  const history = useHistory()
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
     useEffect(() => {
         dispatch(getPatientsDetails(sorted , filter,1))
-    }, [])
+        history.push(`/?sorted=${sorted}&filter=${filter}`)
+    }, [sorted , filter])
 
     const handlePageChange = ( event , value ) => {
         dispatch(getPatientsDetails(sorted,filter,value))
     }
+  //   useEffect(() => {
+  //     if(search === ""){
+  //         setItemArray(patientArray)
+  //     }
+  //     else if(search != ""){
+  //         let filterArray = patientArray.filter((item) =>item.patient_name === search )
+  //         setItemArray(filterArray)
+  //     }
+  // }, [search])
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <List>
-       <div> <input className="h6 p-3 border rounded text-left mx-4" type="text" placeholder="Search By Name" style={{width:'80%',outline:'none'}}/></div>
+       <div> <input className="h6 p-3 border rounded text-left mx-4" type="text" placeholder="Search By Name" onChange={(e) => setSearch(e.target.value)} style={{width:'80%',outline:'none'}}/></div>
       </List>
       <Divider />
       <List>
-         <div className="h5 border p-2 rounded text-left my-4 mx-4"> <AddToQueueIcon />ADD NEW DATA</div>
+        <Link to='/addNew' style={{outline:'none',textDecoration : 'none',color : 'black'}}><div className="h5 border p-2 rounded text-left my-4 mx-4"> <AddToQueueIcon />ADD NEW DATA</div></Link> 
       </List>
       <Divider />
       <List>
@@ -170,7 +187,7 @@ function ResponsiveDrawer(props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-            <Pagination count = {Math.ceil(total/3)}  onChange = {handlePageChange} shape="rounded" style={{display:'flex' , justifyContent:'center',paddingBottom:'20px'}}/>
+            <Pagination count = {Math.ceil(total/2)}  onChange = {handlePageChange} shape="rounded" style={{display:'flex' , justifyContent:'center',paddingBottom:'20px'}}/>
             <Cards  sorted = {sorted} filters={filter} handlePageChange = {handlePageChange} />
       </main>
     </div>
