@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,12 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Cards from './Cards';
+import AddToQueueIcon from '@material-ui/icons/AddToQueue';
+import SortIcon from '@material-ui/icons/Sort';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import {getPatientsDetails} from '../Redux/PatientsRedux/actions'
+import { useDispatch, useSelector } from 'react-redux';
+import Pagination from '@material-ui/lab/Pagination';
 
 const drawerWidth = 240;
 
@@ -59,31 +65,54 @@ const useStyles = makeStyles((theme) => ({
 function ResponsiveDrawer(props) {
   const { window } = props;
   const classes = useStyles();
+  const [sorted,setSort] = useState("")
+  const [filter,setFilter] = useState("")
   const theme = useTheme();
+  const total = useSelector((state) => state.patientReducer.totalCount)
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
+  const dispatch = useDispatch()
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+    useEffect(() => {
+        dispatch(getPatientsDetails(sorted , filter,1))
+    }, [])
 
+    const handlePageChange = ( event , value ) => {
+        dispatch(getPatientsDetails(sorted,filter,value))
+    }
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <List>
-        Add
+       <div> <input className="h6 p-3 border rounded text-left mx-4" type="text" placeholder="Search By Name" style={{width:'80%',outline:'none'}}/></div>
       </List>
       <Divider />
       <List>
-        Sort
+         <div className="h5 border p-2 rounded text-left my-4 mx-4"> <AddToQueueIcon />ADD NEW DATA</div>
       </List>
       <Divider />
       <List>
-       Filter
+        <div className="h5 border p-2 rounded text-left my-5 mx-4">  <SortIcon />
+            <select name="age" className="border-0" onChange={(e) => setSort(e.target.value)}  style={{background:'#009688',outline:'none'}}>
+                <option value=""> SORT BY AGE</option>
+                <option value="Asc">Ascending</option>  
+                <option value="Desc">Descending</option>
+            </select>
+        </div> 
       </List>
       <Divider />
       <List>
-       Search
+       <div className="h5 border py-2 px-1 rounded text-left my-4 mx-4"> <FilterListIcon/>
+       <select name="age" className="border-0" onChange={(e) => setFilter(e.target.value)} style={{background:'#009688',outline:'none'}}>
+                <option value="">FILTER BY SEX</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Others">Others</option>
+            </select></div> 
       </List>
+      
+     
     </div>
   );
 
@@ -141,8 +170,8 @@ function ResponsiveDrawer(props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-      
-            <Cards/>
+            <Pagination count = {Math.ceil(total/3)}  onChange = {handlePageChange} shape="rounded" style={{display:'flex' , justifyContent:'center',paddingBottom:'20px'}}/>
+            <Cards  sorted = {sorted} filters={filter} handlePageChange = {handlePageChange} />
       </main>
     </div>
   );
