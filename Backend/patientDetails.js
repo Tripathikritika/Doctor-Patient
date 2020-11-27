@@ -29,7 +29,7 @@ const patientList = [
         "patient_name" : "Sheelu",
         "patient_gender" : "Female",
         "patient_age" : "26",
-        "patient_avatar" : "https://sheelu27.github.io/image/profile.png",
+        "patient_avatar" : "https://avatars2.githubusercontent.com/u/63995282?s=460&u=9f0b62e75bbd56a6c13841a1381502fa82dc65df&v=4",
         "patient_medicine" :[
             {
                 "medicine_name" : "Benadryl",
@@ -51,7 +51,7 @@ const patientList = [
         "patient_name" : "Richa Singh",
         "patient_gender" : "Female",
         "patient_age" : "25",
-        "patient_avatar" : "https://richa-24.github.io/Richa_Singh_Portfolio/images/image.jpg",
+        "patient_avatar" : "https://avatars3.githubusercontent.com/u/63995194?s=460&u=26f45b5e33912d4b51438eb5628a0a13f1fcb989&v=4",
         "patient_medicine" :[
             {
                 "medicine_name" : "Metformin",

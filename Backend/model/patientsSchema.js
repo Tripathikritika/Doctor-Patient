@@ -12,7 +12,7 @@ const DoctorPatientSchema = new Schema ({
     patient_gender : {
         type : String
     },
-    patient_avatar : {
+    patient_avatar :{
         type : String
     },
     patient_age : {
